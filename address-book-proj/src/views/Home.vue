@@ -5,7 +5,7 @@
         <table class="table">
           <thead>
             <tr>
-              <th><input type="checkbox" @change="checkAll()"></th>
+              <th><input type="checkbox" class="checkbox" @change="checkAll()"></th>
               <th>Id</th>
               <th>Name</th>
               <th>Location</th>
@@ -17,7 +17,7 @@
           <tbody>
             <tr v-for="item in items" :key=item.id :class="{'row-selected': selectedItems.find(i => i.id === item.id)}">
               <td>
-      <input type="checkbox" @change="rowSelected(item)">
+      <input type="checkbox" class="checkbox" @change="rowSelected(item)">
               </td>
               <td>{{item.id}}</td>
               <td>{{item.name}}</td>
@@ -28,6 +28,17 @@
             </tr>
           </tbody>
         </table>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-3 col-sm-3 col-xs-3">
+        <button class="btn btn-success">Add New</button>
+      </div>
+      <div class="col-md-3 col-sm-3 col-xs-3">
+        <button class="btn btn-warning">Update</button>
+      </div>
+      <div class="col-md-3 col-sm-3 col-xs-3 offset-md-3 offset-sm-3 offset-xs-3">
+        <button class="btn btn-danger">Delete</button>
       </div>
     </div>
   </div>
@@ -90,5 +101,9 @@ export default {
 <style scoped>
 .row-selected {
   background-color:#ffa ;
+}
+
+.checkbox {
+  cursor: pointer;
 }
 </style>
