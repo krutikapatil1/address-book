@@ -38,7 +38,7 @@
         <button class="btn btn-warning">Update</button>
       </div>
       <div class="col-md-3 col-sm-3 col-xs-3 offset-md-3 offset-sm-3 offset-xs-3">
-        <button class="btn btn-danger">Delete</button>
+        <button class="btn btn-danger" @click="deleteRecords">Delete</button>
       </div>
     </div>
   </div>
@@ -93,6 +93,9 @@ export default {
       else {
         this.selectedItems = [];
       }
+    },
+    deleteRecords() {
+      this.items = this.items.filter(item => !this.selectedItems.find(selectedItem => selectedItem.id === item.id));
     }
   }
 }
