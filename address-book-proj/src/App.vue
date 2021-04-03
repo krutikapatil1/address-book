@@ -4,9 +4,20 @@
       <router-link to="/">Home</router-link> |
       <router-link to="/about">About</router-link>
     </div> -->
+    <navbar></navbar>
     <router-view/>
   </div>
 </template>
+
+<script>
+import Navbar from '@/views/Navbar'
+export default {
+  name: 'App', 
+  components: {
+    navbar: Navbar
+  }
+}
+</script>
 
 <style>
 #app {
