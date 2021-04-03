@@ -2,19 +2,10 @@
   <div class="container">
     <div class="row">
       <div class="col-md-12 col-sm-12 col-xs-12 mt-5">
-        <!-- <b-table hover striped :items="items" :fields="fields">
-          <template #thead-top="data">
-        <b-tr>
-          <b-th colspan="3"></b-th>
-          <b-th variant="primary" colspan="2">Location</b-th>
-          <b-th variant="success" colspan="2">Phone</b-th>
-        </b-tr>
-      </template>
-        </b-table> -->
-        <table class="table table-striped table-hover">
+        <table class="table">
           <thead>
             <tr>
-              <th>Select</th>
+              <th><input type="checkbox" @change="checkAll()"></th>
               <th>Id</th>
               <th>Name</th>
               <th>Location</th>
@@ -24,8 +15,10 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="item in items" :key=item.id>
-              <td>Select</td>
+            <tr v-for="item in items" :key=item.id :class="{'row-selected': selectedItems.find(i => i.id === item.id)}">
+              <td>
+      <input type="checkbox" @change="rowSelected(item)">
+              </td>
               <td>{{item.id}}</td>
               <td>{{item.name}}</td>
               <td>{{item.location}}</td>
@@ -49,7 +42,17 @@ export default {
      items: [
        {id: '1', name: 'John Smith', location: 'Palo Alto', building: 'CR-211', office: '(408)-345-3432', cell: '(408)-345-9067'},
        {id: '2', name: 'Tamara Landry', location: 'Palo Alto', building: 'CR-211', office: '(408)-345-3434', cell: '(408)-335-9067'}
-     ]
+     ],
+     selectedItems: []
+    }
+  },
+  computed: {
+    isSelected(id) {
+      const item = this.selectedItems.find(item => item.id === id);
+      if (item) {
+        return true;
+      }
+      return false;
     }
   },
   methods: {
@@ -62,7 +65,30 @@ export default {
       inputEl.value = cellPhoneEl.textContent;
       cellPhoneEl.textContent = "";
       cellPhoneEl.appendChild(inputEl);
+    },
+    rowSelected(item) {
+      if(this.selectedItems.find(i => i.id === item.id)) {
+        this.selectedItems = this.selectedItems.filter(i => i.id !== item.id);
+      }
+      else {
+      
+      this.selectedItems.push(item);
+      }
+    },
+    checkAll() {
+      if (this.selectedItems.length == 0) {
+        this.selectedItems = this.items;
+      }
+      else {
+        this.selectedItems = [];
+      }
     }
   }
 }
 </script>
+
+<style scoped>
+.row-selected {
+  background-color:#ffa ;
+}
+</style>
