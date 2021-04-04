@@ -70,26 +70,17 @@
 </template>
 
 <script>
+import {mapGetters} from 'vuex';
 export default {
   name: 'Home',
   data() {
     return {
       fields: ['check_all', 'id', 'name', 'location', 'building', 'office', 'cell'],
-     items: [
-       {id: '1', name: 'John Smith', location: 'Palo Alto', building: 'CR-211', office: '(408)-345-3432', cell: '(408)-345-9067'},
-       {id: '2', name: 'Tamara Landry', location: 'Palo Alto', building: 'CR-211', office: '(408)-345-3434', cell: '(408)-335-9067'}
-     ],
      selectedItems: []
     }
   },
   computed: {
-    isSelected(id) {
-      const item = this.selectedItems.find(item => item.id === id);
-      if (item) {
-        return true;
-      }
-      return false;
-    }
+    ...mapGetters(['items'])
   },
   methods: {
     cellClicked(event) {
