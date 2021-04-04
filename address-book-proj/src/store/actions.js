@@ -1,3 +1,7 @@
-export const addItem = ({ commit }, payload) => {
-    commit('addItem', payload);
+export const addItems = ({ commit }) => {
+    commit('addItems');
+}
+
+export const deleteItems = ({ commit }, payload) => {
+    commit('deleteItems', payload);
 }

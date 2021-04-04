@@ -5,7 +5,7 @@
         <table class="table">
           <thead>
             <tr>
-              <th><input type="checkbox" class="checkbox" @change="checkAll()"></th>
+              <th><input type="checkbox" class="checkbox" @change="checkAll()" :disabled="items.length === 0"></th>
               <th>Id</th>
               <th>Name</th>
               <th>Location</th>
@@ -60,7 +60,7 @@
         <button class="btn btn-success" @click="addNewItem">Add New</button>
       </div>
       <div class="col-md-3 col-sm-3 col-xs-3" style="text-align:left">
-        <button class="btn btn-warning">Update</button>
+        <button class="btn btn-warning" @click="updateRecords">Update</button>
       </div>
       <div class="col-md-3 col-sm-3 col-xs-3 offset-md-3 offset-sm-3 offset-xs-3">
         <button class="btn btn-danger" @click="deleteRecords">Delete</button>
@@ -76,7 +76,8 @@ export default {
   data() {
     return {
       fields: ['check_all', 'id', 'name', 'location', 'building', 'office', 'cell'],
-     selectedItems: []
+     selectedItems: [],
+     unsavedItems: []
     }
   },
   computed: {
@@ -111,7 +112,8 @@ export default {
       }
     },
     deleteRecords() {
-      this.items = this.items.filter(item => !this.selectedItems.find(selectedItem => selectedItem.id === item.id));
+      this.$store.dispatch('deleteItems', this.selectedItems);
+      this.selectedItems = [];
     },
     addNewItem() {
       const newItem = {
@@ -123,7 +125,9 @@ export default {
         cell: ''
       }
       this.items.push(newItem);
-     
+    },
+    updateRecords() {
+      this.$store.dispatch('addItems');
     }
   }
 }
