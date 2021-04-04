@@ -1,7 +1,7 @@
-export const addItems = (state) => {
-    const unsavedItems = state.items.filter(item => item.id === '');
+export const addItems = (state, payload) => {
+    console.log(payload);
+    console.log(state.items);
     state.items = state.items.filter(item => item.id !== '');
-
     let items = state.items.sort((a, b) => {
         if (a.id < b.id) {
             return -1;
@@ -12,7 +12,7 @@ export const addItems = (state) => {
         }
     })
     let lastId = items.length === 0 ? 0 : items[items.length - 1].id;
-    for (let item of unsavedItems) {
+    for (let item of payload) {
         item.id = ++lastId;
         state.items.push(item);
     }

@@ -3,21 +3,24 @@
     <div class="row">
       <div class="col-md-12 col-sm-12 col-xs-12 mt-5">
         <table class="table">
-          <thead>
+          <thead class="thead-light">
             <tr>
-              <th><input type="checkbox" class="checkbox" @change="checkAll()" :disabled="items.length === 0"></th>
-              <th>Id</th>
-              <th>Name</th>
-              <th>Location</th>
-              <th>Building</th>
+              <th rowspan="2"><input type="checkbox" class="checkbox" @change="checkAll($event)" :disabled="items.length === 0"></th>
+              <th rowspan="2">Id</th>
+              <th rowspan="2">Name</th>
+              <th rowspan="2">Location</th>
+              <th rowspan="2">Office</th>
+              <th colspan="2">Phone</th>
+            </tr>
+            <tr>
               <th>Office</th>
               <th>Cell</th>
             </tr>
           </thead>
           <tbody>
-            <tr v-for="item in items" :key=item.id class="table-row" :class="{'row-selected': selectedItems.find(i => i.id === item.id), 'new-row': item.id === ''}">
+            <tr v-for="(item, name, index) in items" :key=index class="table-row" :class="{'row-selected': selectedItems.find(i => i.id === item.id), 'new-row': item.id === ''}">
               <td>
-      <input type="checkbox" class="checkbox" @change="rowSelected(item)" :disabled="item.id === ''">
+      <input type="checkbox" class="checkbox" @change="rowSelected($event, item)" :disabled="item.id === ''" :checked="selectedItems.find(i => i.id === item.id)">
               </td>
               <td>{{item.id}}</td>
               <td class="name">
@@ -94,17 +97,17 @@ export default {
       cellPhoneEl.textContent = "";
       cellPhoneEl.appendChild(inputEl);
     },
-    rowSelected(item) {
-      if(this.selectedItems.find(i => i.id === item.id)) {
-        this.selectedItems = this.selectedItems.filter(i => i.id !== item.id);
+    rowSelected(event, item) {
+      if(event.target.checked && !this.selectedItems.find(i => i.id === item.id)) {
+        this.selectedItems.push(item);
       }
       else {
-      
-      this.selectedItems.push(item);
+        this.selectedItems = this.selectedItems.filter(i => i.id !== item.id);
+        document.querySelector('thead').querySelector('.checkbox').checked = false;
       }
     },
-    checkAll() {
-      if (this.selectedItems.length == 0) {
+    checkAll(event) {
+      if(event.target.checked) {
         this.selectedItems = this.items;
       }
       else {
@@ -114,6 +117,14 @@ export default {
     deleteRecords() {
       this.$store.dispatch('deleteItems', this.selectedItems);
       this.selectedItems = [];
+      this.resetCheckBoxes();
+    },
+    resetCheckBoxes() {
+      const thead = document.querySelector('thead');
+      const tbody = document.querySelector('tbody');
+      let checkBoxList = tbody.querySelectorAll('.checkbox');
+      checkBoxList.forEach(checkbox => checkbox.checked = false);
+      thead.querySelector('.checkbox').checked = false;
     },
     addNewItem() {
       const newItem = {
@@ -127,7 +138,8 @@ export default {
       this.items.push(newItem);
     },
     updateRecords() {
-      this.$store.dispatch('addItems');
+      const newItems = this.items.filter(item => item.id === '');
+      this.$store.dispatch('addItems', newItems);
     }
   }
 }
@@ -152,5 +164,14 @@ input:focus {
     outline: none !important;
     border:1px solid red;
     box-shadow: 0 0 10px #719ECE;
+}
+
+table th[rowspan] {
+  vertical-align: middle;
+  text-align: center;
+}
+
+.container-fluid {
+  margin-bottom: 76px;
 }
 </style>
