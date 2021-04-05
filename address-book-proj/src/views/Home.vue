@@ -9,19 +9,49 @@
           <thead class="thead-light">
             <tr>
               <th rowspan="2"><input type="checkbox" class="checkbox" @change="checkAll($event)" :disabled="items.length === 0"></th>
-              <th rowspan="2">ID</th>
-              <th rowspan="2">Name</th>
-              <th rowspan="2">Location</th>
-              <th rowspan="2">Office</th>
+              <th rowspan="2" @click="sort('id')">ID<i v-if="currentSort === 'id' && currentSortDir === 'desc'" 
+              class='fas fa-sort-down' 
+              :class="{'active': currentSort === 'id'}"></i>
+              <i v-else class='fas fa-sort-up' 
+              :class="{'active': currentSort === 'id'}"></i>
+              </th>
+              <th rowspan="2" @click="sort('name')">Name
+                <i v-if="currentSort === 'name' && currentSortDir === 'desc'" 
+              class='fas fa-sort-down' 
+              :class="{'active': currentSort === 'name'}"></i>
+              <i v-else class='fas fa-sort-up' :class="{'active': currentSort === 'name'}"></i>
+              </th>
+              <th rowspan="2" @click="sort('location')">Location
+                <i v-if="currentSort === 'location' && currentSortDir === 'desc'" 
+              class='fas fa-sort-down' 
+              :class="{'active': currentSort === 'location'}"></i>
+              <i v-else class='fas fa-sort-up' :class="{'active': currentSort === 'location'}"></i>
+              </th>
+              <th rowspan="2" @click="sort('building')">Office
+                <i v-if="currentSort === 'building' && currentSortDir === 'desc'" 
+              class='fas fa-sort-down' 
+              :class="{'active': currentSort === 'building'}"></i>
+              <i v-else class='fas fa-sort-up' :class="{'active': currentSort === 'building'}"></i>
+              </th>
               <th colspan="2">Phone</th>
             </tr>
             <tr>
-              <th>Office</th>
-              <th>Cell</th>
+              <th rowspan="1" @click="sort('office')">Office
+                <i v-if="currentSort === 'office' && currentSortDir === 'desc'" 
+              class='fas fa-sort-down' 
+              :class="{'active': currentSort === 'office'}"></i>
+              <i v-else class='fas fa-sort-up' :class="{'active': currentSort === 'office'}"></i>
+              </th>
+              <th rowspan="1" @click="sort('cell')">Cell
+                <i v-if="currentSort === 'cell' && currentSortDir === 'desc'" 
+              class='fas fa-sort-down' 
+              :class="{'active': currentSort === 'cell'}"></i>
+              <i v-else class='fas fa-sort-up' :class="{'active': currentSort === 'cell'}"></i>
+              </th>
             </tr>
           </thead>
           <tbody>
-            <tr v-for="(item, name, index) in items" :key=index class="table-row" :class="{'row-selected': selectedItems.find(i => i.id === item.id), 'new-row': item.id === ''}">
+            <tr v-for="(item, name, index) in sortedItems" :key=index class="table-row" :class="{'row-selected': selectedItems.find(i => i.id === item.id), 'new-row': item.id === ''}">
               <td>
       <input type="checkbox" class="checkbox" @change="rowSelected($event, item)" :disabled="item.id === ''" :checked="selectedItems.find(i => i.id === item.id)">
               </td>
@@ -84,16 +114,34 @@ export default {
      selectedItems: [],
      unsavedItems: [],
      editingCellPhoneList: [],
-     modalShow: false
+     modalShow: false,
+     currentSort: 'id',
+     currentSortDir: 'asc',
+     currentlyEditing: false
     }
   },
   computed: {
-    ...mapGetters(['items'])
+    ...mapGetters(['items']),
+    sortedItems() {
+      if (!this.currentlyEditing) {
+      return this.items.sort((a,b) => {
+        let modifier = 1;
+        if (this.currentSortDir == 'desc') modifier = -1;
+        if(a[this.currentSort] < b[this.currentSort]) return -1 * modifier;
+        if(a[this.currentSort] > b[this.currentSort]) return 1 * modifier;
+        return 0;
+      })
+      }
+      else {
+        return this.items;
+      }
+    }
   },
   methods: {
     cellClicked(item) {
       console.log(item);
       this.editingCellPhoneList.push(item);
+      this.currentlyEditing = true;
     },
     rowSelected(event, item) {
       if(event.target.checked && !this.selectedItems.find(i => i.id === item.id)) {
@@ -134,6 +182,7 @@ export default {
         cell: ''
       }
       this.items.push(newItem);
+      this.currentlyEditing = true;
     },
     updateRecords() {
       this.unsavedItems = this.items.filter(item => item.id === '');
@@ -142,11 +191,19 @@ export default {
       this.modalShow = true;
       this.$store.dispatch('addItems', this.unsavedItems);
       this.editingCellPhoneList = [];
-      // this.unsavedItems = [];
     },
     modalHidden() {
       this.unsavedItems = [];
       this.modalShow = false;
+      this.currentlyEditing = false;
+    },
+    sort(s) {
+      if (!this.currentlyEditing) {
+      if (s === this.currentSort) {
+        this.currentSortDir = this.currentSortDir === 'asc' ? 'desc' : 'asc';
+      }
+      this.currentSort = s;
+      }
     }
   }
 }
@@ -176,6 +233,7 @@ input:focus {
 table th[rowspan] {
   vertical-align: middle;
   text-align: center;
+  cursor: pointer;
 }
 
 table {
@@ -185,5 +243,13 @@ table {
 
 .container-fluid {
   margin-bottom: 76px;
+}
+
+i {
+  color: #ccc;
+}
+
+i.active {
+  color: #000000;
 }
 </style>
