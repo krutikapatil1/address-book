@@ -9,40 +9,41 @@
           <thead class="thead-light">
             <tr>
               <th rowspan="2"><input type="checkbox" class="checkbox" @change="checkAll($event)" :disabled="items.length === 0"></th>
-              <th rowspan="2" @click="sort('id')">ID<i v-if="currentSort === 'id' && currentSortDir === 'desc'" 
+              <th rowspan="2" @click="sort('id')">{{localeLabels.labels.id}} 
+                <i v-if="currentSort === 'id' && currentSortDir === 'desc'" 
               class='fas fa-sort-down' 
               :class="{'active': currentSort === 'id'}"></i>
               <i v-else class='fas fa-sort-up' 
               :class="{'active': currentSort === 'id'}"></i>
               </th>
-              <th rowspan="2" @click="sort('name')">Name
+              <th rowspan="2" @click="sort('name')">{{localeLabels.labels.name}}
                 <i v-if="currentSort === 'name' && currentSortDir === 'desc'" 
               class='fas fa-sort-down' 
               :class="{'active': currentSort === 'name'}"></i>
               <i v-else class='fas fa-sort-up' :class="{'active': currentSort === 'name'}"></i>
               </th>
-              <th rowspan="2" @click="sort('location')">Location
+              <th rowspan="2" @click="sort('location')">{{localeLabels.labels.location}}
                 <i v-if="currentSort === 'location' && currentSortDir === 'desc'" 
               class='fas fa-sort-down' 
               :class="{'active': currentSort === 'location'}"></i>
               <i v-else class='fas fa-sort-up' :class="{'active': currentSort === 'location'}"></i>
               </th>
-              <th rowspan="2" @click="sort('building')">Office
+              <th rowspan="2" @click="sort('building')">{{localeLabels.labels.building}}
                 <i v-if="currentSort === 'building' && currentSortDir === 'desc'" 
               class='fas fa-sort-down' 
               :class="{'active': currentSort === 'building'}"></i>
               <i v-else class='fas fa-sort-up' :class="{'active': currentSort === 'building'}"></i>
               </th>
-              <th colspan="2">Phone</th>
+              <th colspan="2">{{localeLabels.labels.phone}}</th>
             </tr>
             <tr>
-              <th rowspan="1" @click="sort('office')">Office
+              <th rowspan="1" @click="sort('office')">{{localeLabels.labels.office}}
                 <i v-if="currentSort === 'office' && currentSortDir === 'desc'" 
               class='fas fa-sort-down' 
               :class="{'active': currentSort === 'office'}"></i>
               <i v-else class='fas fa-sort-up' :class="{'active': currentSort === 'office'}"></i>
               </th>
-              <th rowspan="1" @click="sort('cell')">Cell
+              <th rowspan="1" @click="sort('cell')">{{localeLabels.labels.cell}}
                 <i v-if="currentSort === 'cell' && currentSortDir === 'desc'" 
               class='fas fa-sort-down' 
               :class="{'active': currentSort === 'cell'}"></i>
@@ -93,13 +94,13 @@
     </div>
     <div class="row">
       <div class="col-md-3 col-sm-3 col-xs-3" style="text-align:right">
-        <button class="btn btn-success" @click="addNewItem">Add New</button>
+        <button class="btn btn-success" @click="addNewItem">{{localeLabels.buttonLabels.addNew}}</button>
       </div>
       <div class="col-md-3 col-sm-3 col-xs-3" style="text-align:left">
-        <button class="btn btn-warning" @click="updateRecords">Update</button>
+        <button class="btn btn-warning" @click="updateRecords">{{localeLabels.buttonLabels.update}}</button>
       </div>
       <div class="col-md-3 col-sm-3 col-xs-3 offset-md-3 offset-sm-3 offset-xs-3">
-        <button class="btn btn-danger" @click="deleteRecords">Delete</button>
+        <button class="btn btn-danger" @click="deleteRecords">{{localeLabels.buttonLabels.delete}}</button>
       </div>
     </div>
   </div>
@@ -121,7 +122,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['items']),
+    ...mapGetters(['items', 'localeLabels']),
     sortedItems() {
       if (!this.currentlyEditing) {
       return this.items.sort((a,b) => {
