@@ -13,9 +13,17 @@ export const addItems = (state, payload) => {
     })
     let lastId = items.length === 0 ? 0 : items[items.length - 1].id;
     for (let item of payload) {
-        item.id = ++lastId;
-        state.items.push(item);
+        if (item.id === '') {
+            item.id = ++lastId;
+            state.items.push(item);
+        } else {
+            let itemToUpdate = state.items.find(i => i.id === item.id);
+            itemToUpdate = item;
+            state.items = state.items.map(obj => obj.id === itemToUpdate.id ? itemToUpdate : obj);
+        }
     }
+
+
 }
 
 export const deleteItems = (state, payload) => {

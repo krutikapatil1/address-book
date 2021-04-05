@@ -1,12 +1,15 @@
 <template>
   <div class="container-fluid">
+    <b-modal id="modal-xl" size="xl" ok-only v-model="modalShow" @hide="modalHidden" title="Updated the following items" header-bg-variant="primary" header-text-variant="light" footer-bg-variant="warning">
+    <b-table :items="unsavedItems"></b-table>
+  </b-modal>
     <div class="row">
       <div class="col-md-12 col-sm-12 col-xs-12 mt-5">
         <table class="table">
           <thead class="thead-light">
             <tr>
               <th rowspan="2"><input type="checkbox" class="checkbox" @change="checkAll($event)" :disabled="items.length === 0"></th>
-              <th rowspan="2">Id</th>
+              <th rowspan="2">ID</th>
               <th rowspan="2">Name</th>
               <th rowspan="2">Location</th>
               <th rowspan="2">Office</th>
@@ -47,8 +50,8 @@
                 </span>
                 <span v-else>{{item.office}}</span>
               </td>
-              <td class="cell" @dblclick="cellClicked">
-                <span v-if="item.id === ''">
+              <td class="cell" @dblclick="cellClicked(item)">
+                <span v-if="item.id === '' || editingCellPhoneList.find(i => i.id === item.id)">
                   <input type="text" v-model="item.cell">
                 </span>
                 <span v-else>{{item.cell}}</span>
@@ -78,24 +81,19 @@ export default {
   name: 'Home',
   data() {
     return {
-      fields: ['check_all', 'id', 'name', 'location', 'building', 'office', 'cell'],
      selectedItems: [],
-     unsavedItems: []
+     unsavedItems: [],
+     editingCellPhoneList: [],
+     modalShow: false
     }
   },
   computed: {
     ...mapGetters(['items'])
   },
   methods: {
-    cellClicked(event) {
-      const cellPhoneEl = event.target;
-      const inputEl = document.createElement('input');
-      inputEl.style.borderRadius = '2px';
-      inputEl.style.border = '1px solid #ddd';
-      inputEl.style.textAlign = 'center';
-      inputEl.value = cellPhoneEl.textContent;
-      cellPhoneEl.textContent = "";
-      cellPhoneEl.appendChild(inputEl);
+    cellClicked(item) {
+      console.log(item);
+      this.editingCellPhoneList.push(item);
     },
     rowSelected(event, item) {
       if(event.target.checked && !this.selectedItems.find(i => i.id === item.id)) {
@@ -138,8 +136,17 @@ export default {
       this.items.push(newItem);
     },
     updateRecords() {
-      const newItems = this.items.filter(item => item.id === '');
-      this.$store.dispatch('addItems', newItems);
+      this.unsavedItems = this.items.filter(item => item.id === '');
+      this.unsavedItems.push(...this.editingCellPhoneList);
+      this.unsavedItems = this.unsavedItems.filter((v, i, a) => a.indexOf(v) === i);
+      this.modalShow = true;
+      this.$store.dispatch('addItems', this.unsavedItems);
+      this.editingCellPhoneList = [];
+      // this.unsavedItems = [];
+    },
+    modalHidden() {
+      this.unsavedItems = [];
+      this.modalShow = false;
     }
   }
 }
@@ -169,6 +176,11 @@ input:focus {
 table th[rowspan] {
   vertical-align: middle;
   text-align: center;
+}
+
+table {
+  box-shadow: 0 0 10px darkslateblue;
+  border-radius: 10px;
 }
 
 .container-fluid {
