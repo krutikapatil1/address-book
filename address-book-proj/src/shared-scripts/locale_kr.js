@@ -12,5 +12,10 @@ export const labels = {
 export const buttonLabels = {
     addNew: '새 기록 추가',
     update: '최신 정보',
-    delete: '지우다'
+    delete: '지우다',
+    ok: '확인'
+}
+
+export const flyoutLabels = {
+    header: '다음 항목을 업데이트했습니다.'
 }

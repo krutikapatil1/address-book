@@ -1,8 +1,5 @@
 <template>
   <div class="container-fluid">
-    <b-modal id="modal-xl" size="xl" ok-only v-model="modalShow" @hide="modalHidden" title="Updated the following items" header-bg-variant="primary" header-text-variant="light" footer-bg-variant="warning">
-    <b-table :items="unsavedItems"></b-table>
-  </b-modal>
     <div class="row">
       <div class="col-md-12 col-sm-12 col-xs-12 mt-5">
         <table class="table">
@@ -97,28 +94,42 @@
         <button class="btn btn-success" @click="addNewItem">{{localeLabels.buttonLabels.addNew}}</button>
       </div>
       <div class="col-md-3 col-sm-3 col-xs-3" style="text-align:left">
-        <button class="btn btn-warning" @click="updateRecords">{{localeLabels.buttonLabels.update}}</button>
+        <button class="btn btn-warning" @click="updateRecords" :disabled="!currentlyEditing">{{localeLabels.buttonLabels.update}}</button>
       </div>
       <div class="col-md-3 col-sm-3 col-xs-3 offset-md-3 offset-sm-3 offset-xs-3">
-        <button class="btn btn-danger" @click="deleteRecords">{{localeLabels.buttonLabels.delete}}</button>
+        <button class="btn btn-danger" @click="deleteRecords" :disabled="selectedItems.length === 0">{{localeLabels.buttonLabels.delete}}</button>
       </div>
+      <Flyout v-show="isModalVisible" @close="modalHidden" :confirmButtonText="localeLabels.buttonLabels.ok" :displayCancelButton="false">
+      <template v-slot:header>
+        <h5>{{localeLabels.flyoutLabels.header}}</h5>
+      </template>
+
+      <template v-slot:body>
+        <b-table :fields="getFields()" :items="unsavedItems"></b-table>
+      </template>
+    </Flyout>
     </div>
   </div>
 </template>
 
 <script>
 import {mapGetters} from 'vuex';
+import Flyout from '@/components/Flyout.vue';
 export default {
   name: 'Home',
+  components: {
+    Flyout
+  },
   data() {
     return {
      selectedItems: [],
      unsavedItems: [],
      editingCellPhoneList: [],
-     modalShow: false,
      currentSort: 'id',
      currentSortDir: 'asc',
-     currentlyEditing: false
+     currentlyEditing: false,
+     isModalVisible: false,
+     isConfirmModalVisible: false
     }
   },
   computed: {
@@ -189,14 +200,19 @@ export default {
       this.unsavedItems = this.items.filter(item => item.id === '');
       this.unsavedItems.push(...this.editingCellPhoneList);
       this.unsavedItems = this.unsavedItems.filter((v, i, a) => a.indexOf(v) === i);
-      this.modalShow = true;
+      if(this.unsavedItems.length === 0) {
+        return;
+      }
+      this.isModalVisible = true;
       this.$store.dispatch('addItems', this.unsavedItems);
       this.editingCellPhoneList = [];
     },
     modalHidden() {
-      this.unsavedItems = [];
-      this.modalShow = false;
+      this.isModalVisible = false;
       this.currentlyEditing = false;
+      setTimeout(() => {
+        this.unsavedItems = [];
+      }, 300);
     },
     sort(s) {
       if (!this.currentlyEditing) {
@@ -205,6 +221,16 @@ export default {
       }
       this.currentSort = s;
       }
+    },
+    getFields() {
+      return [
+       this.localeLabels.labels.id, 
+     this.localeLabels.labels.name, 
+     this.localeLabels.labels.location, 
+     this.localeLabels.labels.building,
+     this.localeLabels.labels.office, 
+     this.localeLabels.labels.cell
+     ];
     }
   }
 }
@@ -252,5 +278,10 @@ i {
 
 i.active {
   color: #000000;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  pointer-events: all !important;
 }
 </style>

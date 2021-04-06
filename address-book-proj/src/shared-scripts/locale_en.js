@@ -12,5 +12,10 @@ export const labels = {
 export const buttonLabels = {
     addNew: 'Add new',
     update: 'Update',
-    delete: 'Delete'
+    delete: 'Delete',
+    ok: 'Ok'
+}
+
+export const flyoutLabels = {
+    header: 'Updated the following items:'
 }

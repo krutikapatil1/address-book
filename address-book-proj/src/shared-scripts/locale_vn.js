@@ -12,5 +12,10 @@ export const labels = {
 export const buttonLabels = {
     addNew: 'thêm bản ghi mới',
     update: 'cập nhật',
-    delete: 'xóa bỏ'
+    delete: 'xóa bỏ',
+    ok: 'đồng ý'
+}
+
+export const flyoutLabels = {
+    header: 'Đã cập nhật các mục sau:'
 }

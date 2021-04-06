@@ -12,5 +12,10 @@ export const labels = {
 export const buttonLabels = {
     addNew: '添加新記錄',
     update: '更新',
-    delete: '刪除'
+    delete: '刪除',
+    ok: '好的'
+}
+
+export const flyoutLabels = {
+    header: '更新了以下項目：'
 }

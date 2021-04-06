@@ -12,5 +12,10 @@ export const labels = {
 export const buttonLabels = {
     addNew: '新しいレコードを追加する',
     update: '更新',
-    delete: '削除'
+    delete: '削除',
+    ok: 'OK'
+}
+
+export const flyoutLabels = {
+    header: '次の項目を更新しました。'
 }

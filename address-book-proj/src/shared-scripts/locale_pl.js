@@ -1,6 +1,6 @@
 export const labels = {
     home: 'Książka adresowa',
-    id: 'ID',
+    id: 'Identyfikator',
     name: 'Nazwa',
     location: 'Lokalizacja',
     building: 'Budynek biurowy',
@@ -12,5 +12,10 @@ export const labels = {
 export const buttonLabels = {
     addNew: 'Dodaj nowe',
     update: 'Aktualizacja',
-    delete: 'Usunąć'
+    delete: 'Usunąć',
+    ok: 'dobrze'
+}
+
+export const flyoutLabels = {
+    header: 'Zaktualizowano następujące elementy:'
 }

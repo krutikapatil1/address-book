@@ -12,5 +12,10 @@ export const labels = {
 export const buttonLabels = {
     addNew: 'أضف رقما قياسيا جديدا',
     update: 'تحديث',
-    delete: 'حذف'
+    delete: 'حذف',
+    ok: 'نعم'
+}
+
+export const flyoutLabels = {
+    header: 'تم تحديث العناصر التالية:'
 }
