@@ -105,7 +105,26 @@
       </template>
 
       <template v-slot:body>
-        <b-table :fields="getFields()" :items="unsavedItems"></b-table>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>{{localeLabels.labels.name}}</th>
+              <th>{{localeLabels.labels.location}}</th>
+              <th>{{localeLabels.labels.building}}</th>
+              <th>{{localeLabels.labels.office}}</th>
+              <th>{{localeLabels.labels.cell}}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(item, name, index) in unsavedItems" :key="index">
+              <td>{{item.name}}</td>
+              <td>{{item.location}}</td>
+              <td>{{item.building}}</td>
+              <td>{{item.office}}</td>
+              <td>{{item.cell}}</td>
+            </tr>
+          </tbody>
+        </table>
       </template>
     </Flyout>
     </div>
@@ -231,6 +250,10 @@ export default {
      this.localeLabels.labels.office, 
      this.localeLabels.labels.cell
      ];
+    },
+    getItems() {
+      let unsavedItems = [...this.unsavedItems];
+      return unsavedItems;
     }
   }
 }
