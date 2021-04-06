@@ -1,9 +1,20 @@
 <template>
   <div class="container-fluid">
+    <div class="row mt-5">
+      <div class="col-md-3 col-sm-3 col-xs-3" style="text-align:right">
+        <button class="btn btn-success" @click="addNewItem">{{localeLabels.buttonLabels.addNew}}</button>
+      </div>
+      <div class="col-md-3 col-sm-3 col-xs-3" style="text-align:left">
+        <button class="btn btn-warning" @click="updateRecords" :disabled="!currentlyEditing">{{localeLabels.buttonLabels.update}}</button>
+      </div>
+      <div class="col-md-3 col-sm-3 col-xs-3 offset-md-3 offset-sm-3 offset-xs-3">
+        <button class="btn btn-danger" @click="deleteRecords" :disabled="selectedItems.length === 0">{{localeLabels.buttonLabels.delete}}</button>
+      </div>
+    </div>
     <div class="row">
       <div class="col-md-12 col-sm-12 col-xs-12 mt-5">
         <table class="table">
-          <thead class="thead-light">
+          <thead class="thead">
             <tr>
               <th rowspan="2"><input type="checkbox" class="checkbox" @change="checkAll($event)" :disabled="items.length === 0"></th>
               <th rowspan="2" @click="sort('id')">{{localeLabels.labels.id}} 
@@ -74,13 +85,13 @@
               </td>
               <td class="office">
                 <span v-if="item.id === ''">
-                  <input type="text" v-model="item.office">
+                  <input type="text" v-model="item.office" @keyup="formatPhoneNumber($event, item, 'office')">
                 </span>
                 <span v-else>{{item.office}}</span>
               </td>
               <td class="cell" @dblclick="cellClicked(item)">
                 <span v-if="item.id === '' || editingCellPhoneList.find(i => i.id === item.id)">
-                  <input type="text" v-model="item.cell">
+                  <input type="text" v-model="item.cell" @keyup="formatPhoneNumber($event, item, 'cell')">
                 </span>
                 <span v-else>{{item.cell}}</span>
               </td>
@@ -89,17 +100,7 @@
         </table>
       </div>
     </div>
-    <div class="row">
-      <div class="col-md-3 col-sm-3 col-xs-3" style="text-align:right">
-        <button class="btn btn-success" @click="addNewItem">{{localeLabels.buttonLabels.addNew}}</button>
-      </div>
-      <div class="col-md-3 col-sm-3 col-xs-3" style="text-align:left">
-        <button class="btn btn-warning" @click="updateRecords" :disabled="!currentlyEditing">{{localeLabels.buttonLabels.update}}</button>
-      </div>
-      <div class="col-md-3 col-sm-3 col-xs-3 offset-md-3 offset-sm-3 offset-xs-3">
-        <button class="btn btn-danger" @click="deleteRecords" :disabled="selectedItems.length === 0">{{localeLabels.buttonLabels.delete}}</button>
-      </div>
-      <Flyout v-show="isModalVisible" @close="modalHidden" :confirmButtonText="localeLabels.buttonLabels.ok" :displayCancelButton="false">
+    <Flyout v-show="isModalVisible" @close="modalHidden" :confirmButtonText="localeLabels.buttonLabels.ok" :displayCancelButton="false">
       <template v-slot:header>
         <h5>{{localeLabels.flyoutLabels.header}}</h5>
       </template>
@@ -127,7 +128,6 @@
         </table>
       </template>
     </Flyout>
-    </div>
   </div>
 </template>
 
@@ -254,6 +254,25 @@ export default {
     getItems() {
       let unsavedItems = [...this.unsavedItems];
       return unsavedItems;
+    },
+    formatPhoneNumber(event, item, key) {
+      if(isNaN(event.key)) {
+        event.target.value = event.target.value.substr(0, event.target.value.length -1);
+        item[key] = event.target.value;
+        return;
+      }
+      let enteredValue = event.target.value.replace(/[^0-9]/g, '');
+      const max_chars = 10;
+      if (enteredValue.length > max_chars) {
+        event.target.value = event.target.value.substr(0, max_chars+4);
+        return;
+      }
+      if(enteredValue.length === 7) {
+        item[key] = enteredValue.replace(/(\d{3})(\d{4})/, "$1-$2");
+      }
+      if(enteredValue.length === 10) {
+        item[key] = enteredValue.replace(/(\d{3})(\d{3})(\d{4})/, "($1) $2-$3");
+      }
     }
   }
 }
@@ -286,9 +305,15 @@ table th[rowspan] {
   cursor: pointer;
 }
 
+.thead {
+  background-color:#3366CC;
+  color: #ffffff;
+}
+
 table {
-  box-shadow: 0 0 10px darkslateblue;
+  box-shadow: 0 0 10px rgba(0, 0,0,1);
   border-radius: 10px;
+  font-family: sans-serif;
 }
 
 .container-fluid {
@@ -296,11 +321,13 @@ table {
 }
 
 i {
-  color: #ccc;
+  color: #C0C0C0;
+  font-size: 10px;
 }
 
 i.active {
-  color: #000000;
+  color: #ffffff;
+  font-size: 18px;
 }
 
 button:disabled {
