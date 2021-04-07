@@ -283,7 +283,9 @@ export default {
       return unsavedItems;
     },
     formatPhoneNumber(event, item, key) {
-      if(isNaN(event.key)) {
+      console.log(event.keyCode);
+      const ASCIICode = event.keyCode;
+      if(ASCIICode > 31 && (ASCIICode < 48 || ASCIICode > 57)) {
         event.target.value = event.target.value.substr(0, event.target.value.length -1);
         item[key] = event.target.value;
         return;
@@ -291,7 +293,7 @@ export default {
       let enteredValue = event.target.value.replace(/[^0-9]/g, '');
       const max_chars = 10;
       if (enteredValue.length > max_chars) {
-        event.target.value = event.target.value.substr(0, max_chars+4);
+        item[key] = event.target.value.substr(0, max_chars+4);
         return;
       }
       if(enteredValue.length === 7) {
