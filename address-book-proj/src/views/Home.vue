@@ -1,21 +1,23 @@
 <template>
   <div class="container">
-    <div class="row mt-4">
-      <div class="col-md-2 col-sm-2 col-xs-2" style="text-align:left">
+    <div class="row mt-2">
+      <div class="col-md-2 col-sm-2 col-xs-2 mt-2" style="text-align:left">
         <button class="btn btn-success btn-sm" @click="addNewItem">{{localeLabels.buttonLabels.addNew}}</button>
-        <button id="update-btn" class="btn btn-warning btn-sm ml-1" @click="updateRecords" :disabled="!currentlyEditing">{{localeLabels.buttonLabels.update}}</button>
       </div>
-      <div class="col-md-2 col-sm-2 col-xs-2 paginationButtons">
+      <div class="col-md-1 col-sm-1 col-xs-1 mt-2" style="text-align:left">
+        <button id="update-btn" class="btn btn-warning btn-sm" @click="updateRecords" :disabled="!currentlyEditing">{{localeLabels.buttonLabels.update}}</button>
+      </div>
+      <div class="col-md-2 col-sm-2 col-xs-2 mt-2 paginationButtons">
         <button class="btn btn-primary btn-sm" :disabled="currentPage === 1" @click="prevpage">Prev</button>
-        <button class="btn btn-primary btn-sm ml-1" :disabled="(currentPage*pageSize) >= items.length" @click="nextpage">Next</button>
+        <button class="btn btn-primary btn-sm ml-1" :disabled="(currentPage*pageSize) >= filteredItems.length" @click="nextpage">Next</button>
       </div>
-      <div class="col-md-1 col-sm-1 col-xs-1">
+      <div class="col-md-1 col-sm-1 col-xs-1 mt-2">
         <b-form-select v-model="pageSize" :options="options" size="sm"></b-form-select>
       </div>
-      <div class="col-md-5 col-xs-5 col sm-5">
-
+      <div class="col-md-4 col-xs-4 col-sm-4 mt-2">
+        <b-form-input id="input-small" size="sm" v-model="searchStr" placeholder="Search anything"></b-form-input>
       </div>
-      <div class="col-md-2 col-sm-2 col-xs-2" style="text-align:right">
+      <div class="col-md-2 col-sm-2 col-xs-2 mt-2" style="text-align:right">
         <button class="btn btn-danger btn-sm" @click="deleteRecords" :disabled="selectedItems.length === 0">{{localeLabels.buttonLabels.delete}}</button>
       </div>
     </div>
@@ -173,14 +175,29 @@ export default {
      pageSize: 5,
      currentPage: 1,
      onLastPage: false,
-     options: [2, 5, 10, 25, 100]
+     options: [2, 5, 10, 25, 100],
+     searchStr: ''
     }
   },
   computed: {
     ...mapGetters(['items', 'localeLabels']),
+    filteredItems() {
+      const searchString = this.searchStr.toLowerCase();
+      return this.items.filter(item => {
+        if(item.name.toLowerCase().includes(searchString) ||
+      item.id.toString() == searchString || item.location.toLowerCase().includes(searchString) ||
+      item.building.toLowerCase().includes(searchString) || item.office.includes(searchString) ||
+      item.cell.includes(searchString)) {
+        return true;
+      }
+      else {
+        return false;
+      }
+      });
+    },
     sortedItems() {
       if (!this.currentlyEditing) {
-      return this.items.sort((a,b) => {
+      return this.filteredItems.sort((a,b) => {
         let modifier = 1;
         if (this.currentSortDir == 'desc') modifier = -1;
         if(a[this.currentSort] < b[this.currentSort]) return -1 * modifier;
@@ -193,7 +210,7 @@ export default {
       });
       }
       else {
-        return this.items.filter((row, index) => {
+        return this.filteredItems.filter((row, index) => {
         let start = (this.currentPage -1) * this.pageSize;
         let end = this.currentPage*this.pageSize;
         if(index >= start && index < end) return true;
