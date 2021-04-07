@@ -1,13 +1,21 @@
 <template>
   <div class="container">
     <div class="row mt-4">
-      <div class="col-md-3 col-sm-3 col-xs-3" style="text-align:right">
+      <div class="col-md-2 col-sm-2 col-xs-2" style="text-align:left">
         <button class="btn btn-success btn-sm" @click="addNewItem">{{localeLabels.buttonLabels.addNew}}</button>
+        <button id="update-btn" class="btn btn-warning btn-sm ml-1" @click="updateRecords" :disabled="!currentlyEditing">{{localeLabels.buttonLabels.update}}</button>
       </div>
-      <div class="col-md-3 col-sm-3 col-xs-3" style="text-align:left">
-        <button id="update-btn" class="btn btn-warning btn-sm" @click="updateRecords" :disabled="!currentlyEditing">{{localeLabels.buttonLabels.update}}</button>
+      <div class="col-md-2 col-sm-2 col-xs-2 paginationButtons">
+        <button class="btn btn-primary btn-sm" :disabled="currentPage === 1" @click="prevpage">Prev</button>
+        <button class="btn btn-primary btn-sm ml-1" :disabled="(currentPage*pageSize) >= items.length" @click="nextpage">Next</button>
       </div>
-      <div class="col-md-3 col-sm-3 col-xs-3 offset-md-3 offset-sm-3 offset-xs-3">
+      <div class="col-md-1 col-sm-1 col-xs-1">
+        <b-form-select v-model="pageSize" :options="options" size="sm"></b-form-select>
+      </div>
+      <div class="col-md-5 col-xs-5 col sm-5">
+
+      </div>
+      <div class="col-md-2 col-sm-2 col-xs-2" style="text-align:right">
         <button class="btn btn-danger btn-sm" @click="deleteRecords" :disabled="selectedItems.length === 0">{{localeLabels.buttonLabels.delete}}</button>
       </div>
     </div>
@@ -161,7 +169,11 @@ export default {
      isModalVisible: false,
      isConfirmModalVisible: false,
      showAlertPanel: false,
-     alertMessage: ''
+     alertMessage: '',
+     pageSize: 5,
+     currentPage: 1,
+     onLastPage: false,
+     options: [2, 5, 10, 25, 100]
     }
   },
   computed: {
@@ -174,14 +186,28 @@ export default {
         if(a[this.currentSort] < b[this.currentSort]) return -1 * modifier;
         if(a[this.currentSort] > b[this.currentSort]) return 1 * modifier;
         return 0;
-      })
+      }).filter((row, index) => {
+        let start = (this.currentPage -1) * this.pageSize;
+        let end = this.currentPage*this.pageSize;
+        if(index >= start && index < end) return true;
+      });
       }
       else {
-        return this.items;
+        return this.items.filter((row, index) => {
+        let start = (this.currentPage -1) * this.pageSize;
+        let end = this.currentPage*this.pageSize;
+        if(index >= start && index < end) return true;
+      });;
       }
     }
   },
   methods: {
+    nextpage() {
+      if((this.currentPage*this.pageSize) < this.items.length) this.currentPage++;
+    },
+    prevpage() {
+      if(this.currentPage > 1) this.currentPage--;
+    },
     countDownChanged(dismissCountDown) {
         this.dismissCountDown = dismissCountDown
       },
@@ -192,7 +218,6 @@ export default {
         }, 5000);
       },
     cellClicked(item) {
-      console.log(item);
       this.editingCellPhoneList.push(item);
       this.currentlyEditing = true;
     },
@@ -217,6 +242,7 @@ export default {
       this.$store.dispatch('deleteItems', this.selectedItems);
       this.selectedItems = [];
       this.resetCheckBoxes();
+      this.currentPage = 1;
     },
     resetCheckBoxes() {
       const thead = document.querySelector('thead');
@@ -234,7 +260,7 @@ export default {
         office: '',
         cell: ''
       }
-      this.items.push(newItem);
+      this.items.unshift(newItem);
       this.currentlyEditing = true;
     },
     updateRecords() {
@@ -283,7 +309,6 @@ export default {
       return unsavedItems;
     },
     formatPhoneNumber(event, item, key) {
-      console.log(event.keyCode);
       const ASCIICode = event.keyCode;
       if(ASCIICode > 31 && (ASCIICode < 48 || ASCIICode > 57)) {
         event.target.value = event.target.value.substr(0, event.target.value.length -1);
@@ -384,5 +409,9 @@ i.active {
 button:disabled {
   cursor: not-allowed;
   pointer-events: all !important;
+}
+
+.paginationButtons {
+  text-align: right;
 }
 </style>

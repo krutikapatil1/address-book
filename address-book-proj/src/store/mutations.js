@@ -13,8 +13,6 @@ import * as arabicLocale from '../shared-scripts/locale_ae';
 import * as vietnameseLocale from '../shared-scripts/locale_vn';
 
 export const addItems = (state, payload) => {
-    console.log(payload);
-    console.log(state.items);
     state.items = state.items.filter(item => item.id !== '');
     let items = state.items.sort((a, b) => {
         if (a.id < b.id) {
