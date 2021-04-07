@@ -1,18 +1,29 @@
 <template>
-  <div class="container-fluid">
-    <div class="row mt-5">
+  <div class="container">
+    <div class="row mt-4">
       <div class="col-md-3 col-sm-3 col-xs-3" style="text-align:right">
-        <button class="btn btn-success" @click="addNewItem">{{localeLabels.buttonLabels.addNew}}</button>
+        <button class="btn btn-success btn-sm" @click="addNewItem">{{localeLabels.buttonLabels.addNew}}</button>
       </div>
       <div class="col-md-3 col-sm-3 col-xs-3" style="text-align:left">
-        <button class="btn btn-warning" @click="updateRecords" :disabled="!currentlyEditing">{{localeLabels.buttonLabels.update}}</button>
+        <button id="update-btn" class="btn btn-warning btn-sm" @click="updateRecords" :disabled="!currentlyEditing">{{localeLabels.buttonLabels.update}}</button>
       </div>
       <div class="col-md-3 col-sm-3 col-xs-3 offset-md-3 offset-sm-3 offset-xs-3">
-        <button class="btn btn-danger" @click="deleteRecords" :disabled="selectedItems.length === 0">{{localeLabels.buttonLabels.delete}}</button>
+        <button class="btn btn-danger btn-sm" @click="deleteRecords" :disabled="selectedItems.length === 0">{{localeLabels.buttonLabels.delete}}</button>
       </div>
     </div>
-    <div class="row">
-      <div class="col-md-12 col-sm-12 col-xs-12 mt-5">
+    <div class="row mt-2">
+      <div class="col-md-6 col-sm-6 col-lg-6 offset-3">
+        <b-alert
+      :show="showAlertPanel"
+      variant="warning"
+    >
+      {{alertMessage}}
+    </b-alert>
+
+      </div>
+    </div>
+    <div class="row mt-4">
+      <div class="col-md-12 col-sm-12 col-xs-12">
         <table class="table">
           <thead class="thead">
             <tr>
@@ -148,7 +159,9 @@ export default {
      currentSortDir: 'asc',
      currentlyEditing: false,
      isModalVisible: false,
-     isConfirmModalVisible: false
+     isConfirmModalVisible: false,
+     showAlertPanel: false,
+     alertMessage: ''
     }
   },
   computed: {
@@ -169,6 +182,15 @@ export default {
     }
   },
   methods: {
+    countDownChanged(dismissCountDown) {
+        this.dismissCountDown = dismissCountDown
+      },
+      showAlert() {
+        this.showAlertPanel = true;
+        setTimeout(() => {
+          this.showAlertPanel = false;
+        }, 5000);
+      },
     cellClicked(item) {
       console.log(item);
       this.editingCellPhoneList.push(item);
@@ -222,9 +244,14 @@ export default {
       if(this.unsavedItems.length === 0) {
         return;
       }
+      if(!this.areAllNewEntriesValid(this.unsavedItems)) {
+        this.showAlert();
+      }
+      else {
       this.isModalVisible = true;
       this.$store.dispatch('addItems', this.unsavedItems);
       this.editingCellPhoneList = [];
+      }
     },
     modalHidden() {
       this.isModalVisible = false;
@@ -273,6 +300,28 @@ export default {
       if(enteredValue.length === 10) {
         item[key] = enteredValue.replace(/(\d{3})(\d{3})(\d{4})/, "($1) $2-$3");
       }
+    },
+    areAllNewEntriesValid(newEntries) {
+      let isValid = true;
+      if(newEntries.find(newEntry => newEntry.name === '' || newEntry.cell=== '')) {
+        this.alertMessage = 'Name and cell phone number entries cannot be empty!!'
+        isValid = false;
+      }
+      else if(newEntries.find(newEntry => {
+        const officeNumber = newEntry.office.replace(/[^0-9]/g, '');
+        const cellNumber = newEntry.cell.replace(/[^0-9]/g, '');
+        if((officeNumber.length !== 7 && officeNumber.length !== 10) ||(cellNumber.length !== 10)) {
+          return true;
+        }
+      })
+      ) {
+        this.alertMessage = 'Please enter valid phone numbers!';
+        isValid = false;
+      }
+      else {
+        this.alertMessage = '';
+      }
+      return isValid;
     }
   }
 }
@@ -280,7 +329,7 @@ export default {
 
 <style scoped>
 .row-selected {
-  background-color:#ffa ;
+  background-color:#DEDEDE;
 }
 
 .checkbox {
@@ -313,10 +362,10 @@ table th[rowspan] {
 table {
   box-shadow: 0 0 10px rgba(0, 0,0,1);
   border-radius: 10px;
-  font-family: sans-serif;
+  font-family: 'Karla' sans-serif;
 }
 
-.container-fluid {
+.container {
   margin-bottom: 76px;
 }
 

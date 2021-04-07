@@ -1,6 +1,6 @@
 <template>
     <div>
-  <b-navbar toggleable="lg" type="light" variant="light">
+  <b-navbar toggleable="lg" type="dark" variant="dark">
     <b-navbar-brand href="#">{{localeLabels.labels.home}}</b-navbar-brand>
 
     <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
@@ -48,3 +48,9 @@ export default {
     }
 }
 </script>
+
+<style scoped>
+.navbar {
+  background: #dddddd;
+}
+</style>
