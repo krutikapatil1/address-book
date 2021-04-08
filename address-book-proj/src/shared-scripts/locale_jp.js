@@ -13,7 +13,10 @@ export const buttonLabels = {
     addNew: '新しいレコードを追加する',
     update: '更新',
     delete: '削除',
-    ok: 'OK'
+    ok: 'はい',
+    prev: '前のページ',
+    next: '次のページ',
+    searchPl: '探す'
 }
 
 export const flyoutLabels = {

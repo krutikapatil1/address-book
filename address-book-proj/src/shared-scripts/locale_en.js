@@ -10,10 +10,13 @@ export const labels = {
 }
 
 export const buttonLabels = {
-    addNew: 'Add new',
+    addNew: 'Add',
     update: 'Update',
     delete: 'Delete',
-    ok: 'Ok'
+    ok: 'Ok',
+    prev: 'Prev',
+    next: 'Next',
+    searchPl: 'Search'
 }
 
 export const flyoutLabels = {

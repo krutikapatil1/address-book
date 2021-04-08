@@ -7,15 +7,15 @@
       <div class="col-md-1 col-sm-1 col-xs-1 mt-2" style="text-align:left">
         <button id="update-btn" class="btn btn-warning btn-sm" @click="updateRecords" :disabled="!currentlyEditing">{{localeLabels.buttonLabels.update}}</button>
       </div>
-      <div class="col-md-2 col-sm-2 col-xs-2 mt-2 paginationButtons">
-        <button class="btn btn-primary btn-sm" :disabled="currentPage === 1" @click="prevpage">Prev</button>
-        <button class="btn btn-primary btn-sm ml-1" :disabled="(currentPage*pageSize) >= filteredItems.length" @click="nextpage">Next</button>
+      <div class="col-md-2 col-sm-2 col-xs-2 offset-1 mt-2 paginationButtons">
+        <button class="btn btn-primary btn-sm" :disabled="(currentPage*pageSize) >= filteredItems.length" @click="nextpage">{{localeLabels.buttonLabels.next}}</button>
+        <button class="btn btn-primary btn-sm ml-1" :disabled="currentPage === 1" @click="prevpage">{{localeLabels.buttonLabels.prev}}</button>
       </div>
       <div class="col-md-1 col-sm-1 col-xs-1 mt-2">
         <b-form-select v-model="pageSize" :options="options" size="sm"></b-form-select>
       </div>
-      <div class="col-md-4 col-xs-4 col-sm-4 mt-2">
-        <b-form-input id="input-small" size="sm" v-model="searchStr" placeholder="Search anything"></b-form-input>
+      <div class="col-md-3 col-xs-3 col-sm-3 mt-2">
+        <b-form-input id="input-small" size="sm" v-model="searchStr" :placeholder="localeLabels.buttonLabels.searchPl"></b-form-input>
       </div>
       <div class="col-md-2 col-sm-2 col-xs-2 mt-2" style="text-align:right">
         <button class="btn btn-danger btn-sm" @click="deleteRecords" :disabled="selectedItems.length === 0">{{localeLabels.buttonLabels.delete}}</button>
@@ -25,7 +25,7 @@
       <div class="col-md-6 col-sm-6 col-lg-6 offset-3">
         <b-alert
       :show="showAlertPanel"
-      variant="warning"
+      variant="danger"
     >
       {{alertMessage}}
     </b-alert>
@@ -45,7 +45,7 @@
               <i v-else class='fas fa-sort-up' 
               :class="{'active': currentSort === 'id'}"></i>
               </th>
-              <th rowspan="2" @click="sort('name')">{{localeLabels.labels.name}}
+              <th rowspan="2" @click="sort('name')">* {{localeLabels.labels.name}}
                 <i v-if="currentSort === 'name' && currentSortDir === 'desc'" 
               class='fas fa-sort-down' 
               :class="{'active': currentSort === 'name'}"></i>
@@ -72,7 +72,7 @@
               :class="{'active': currentSort === 'office'}"></i>
               <i v-else class='fas fa-sort-up' :class="{'active': currentSort === 'office'}"></i>
               </th>
-              <th rowspan="1" @click="sort('cell')">{{localeLabels.labels.cell}}
+              <th rowspan="1" @click="sort('cell')">* {{localeLabels.labels.cell}}
                 <i v-if="currentSort === 'cell' && currentSortDir === 'desc'" 
               class='fas fa-sort-down' 
               :class="{'active': currentSort === 'cell'}"></i>
@@ -182,6 +182,7 @@ export default {
   computed: {
     ...mapGetters(['items', 'localeLabels']),
     filteredItems() {
+      //Logic to filter the records based to on search string
       const searchString = this.searchStr.toLowerCase();
       return this.items.filter(item => {
         if(item.name.toLowerCase().includes(searchString) ||
@@ -196,6 +197,7 @@ export default {
       });
     },
     sortedItems() {
+      //disabling sorting if currently editting records
       if (!this.currentlyEditing) {
       return this.filteredItems.sort((a,b) => {
         let modifier = 1;
@@ -210,6 +212,7 @@ export default {
       });
       }
       else {
+        //If currently editing, just return the records in the present state
         return this.filteredItems.filter((row, index) => {
         let start = (this.currentPage -1) * this.pageSize;
         let end = this.currentPage*this.pageSize;
@@ -281,16 +284,22 @@ export default {
       this.currentlyEditing = true;
     },
     updateRecords() {
+      //Before saving, delete empty rows (row with both name and cell empty, are considered empty rows)
+      this.$store.dispatch('deleteEmptyRows');
+      //get a list of unsaved items
       this.unsavedItems = this.items.filter(item => item.id === '');
       this.unsavedItems.push(...this.editingCellPhoneList);
       this.unsavedItems = this.unsavedItems.filter((v, i, a) => a.indexOf(v) === i);
+      //If nothing to save, just return
       if(this.unsavedItems.length === 0) {
         return;
       }
+      //validte the new entries before saving, if invalid, display an alert panel
       if(!this.areAllNewEntriesValid(this.unsavedItems)) {
         this.showAlert();
       }
       else {
+        //after successfully validting the new entries, save the data
       this.isModalVisible = true;
       this.$store.dispatch('addItems', this.unsavedItems);
       this.editingCellPhoneList = [];
@@ -321,10 +330,6 @@ export default {
      this.localeLabels.labels.cell
      ];
     },
-    getItems() {
-      let unsavedItems = [...this.unsavedItems];
-      return unsavedItems;
-    },
     formatPhoneNumber(event, item, key) {
       const ASCIICode = event.keyCode;
       if(ASCIICode > 31 && (ASCIICode < 48 || ASCIICode > 57)) {
@@ -347,15 +352,24 @@ export default {
     },
     areAllNewEntriesValid(newEntries) {
       let isValid = true;
+      //In case 'name' and /or 'cell' entries are missing, invalidate the new entry
       if(newEntries.find(newEntry => newEntry.name === '' || newEntry.cell=== '')) {
         this.alertMessage = 'Name and cell phone number entries cannot be empty!!'
         isValid = false;
       }
+      //else, check to make sure the phone numbers are in the correct format. Correct format is all numbers with only 7 or 10 digits
       else if(newEntries.find(newEntry => {
         const officeNumber = newEntry.office.replace(/[^0-9]/g, '');
         const cellNumber = newEntry.cell.replace(/[^0-9]/g, '');
-        if((officeNumber.length !== 7 && officeNumber.length !== 10) ||(cellNumber.length !== 10)) {
-          return true;
+        if (newEntry.office) {
+          if((officeNumber.length !== 7 && officeNumber.length !== 10) ||(cellNumber.length !== 10)) {
+            return true;
+          }
+        }
+        else {
+          if(cellNumber.length !== 10) {
+            return true;
+          }
         }
       })
       ) {
@@ -384,6 +398,7 @@ input {
   border: 1px solid #ddd;
   border-radius: 4px;
   max-width: 80%;
+  text-align: center;
 }
 
 input:focus {
@@ -430,5 +445,11 @@ button:disabled {
 
 .paginationButtons {
   text-align: right;
+  display: flex;
+  flex-direction:row-reverse;
+}
+
+#input-small {
+  text-align: left;;
 }
 </style>

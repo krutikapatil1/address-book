@@ -13,7 +13,10 @@ export const buttonLabels = {
     addNew: 'Добавить новое',
     update: 'Обновлять',
     delete: 'Удалить',
-    ok: 'в порядке'
+    ok: 'в порядке',
+    prev: 'Предыдущая страница',
+    next: 'Следующая страница',
+    searchPl: 'Поиск'
 }
 
 export const flyoutLabels = {

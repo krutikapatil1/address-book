@@ -13,7 +13,10 @@ export const buttonLabels = {
     addNew: 'أضف رقما قياسيا جديدا',
     update: 'تحديث',
     delete: 'حذف',
-    ok: 'نعم'
+    ok: 'نعم',
+    prev: 'الصفحة السابقة',
+    next: 'الصفحة التالية',
+    searchPl: 'ابحث في سجل'
 }
 
 export const flyoutLabels = {

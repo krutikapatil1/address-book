@@ -13,7 +13,10 @@ export const buttonLabels = {
     addNew: 'Neuen Datensatz hinzufügen',
     update: 'Aktualisieren',
     delete: 'Löschen',
-    ok: 'Ok'
+    ok: 'Ok',
+    prev: 'Vorherige Seite',
+    next: 'Nächste Seite',
+    searchPl: 'Suche'
 }
 
 export const flyoutLabels = {

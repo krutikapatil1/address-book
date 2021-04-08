@@ -13,7 +13,10 @@ export const buttonLabels = {
     addNew: '새 기록 추가',
     update: '최신 정보',
     delete: '지우다',
-    ok: '확인'
+    ok: '확인',
+    prev: '이전 페이지',
+    next: '다음 페이지',
+    searchPl: '검색'
 }
 
 export const flyoutLabels = {

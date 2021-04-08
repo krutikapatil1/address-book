@@ -10,3 +10,7 @@ export const setLocale = ({ commit }, locale) => {
     commit('setLocale', locale);
     commit('setLocaleLabels', locale);
 }
+
+export const deleteEmptyRows = ({ commit }) => {
+    commit('deleteEmptyRows');
+}

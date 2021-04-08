@@ -89,3 +89,14 @@ export const setLocaleLabels = (state, locale) => {
             break;
     }
 }
+
+export const deleteEmptyRows = state => {
+    state.items = state.items.filter(i => {
+        if (i.name !== '' || i.cell !== '') {
+            return true;
+        } else if (i.name === '' && i.cell === '') {
+            return false;
+        }
+    });
+
+}

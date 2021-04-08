@@ -13,7 +13,10 @@ export const buttonLabels = {
     addNew: 'thêm bản ghi mới',
     update: 'cập nhật',
     delete: 'xóa bỏ',
-    ok: 'đồng ý'
+    ok: 'đồng ý',
+    prev: 'Trang trước',
+    next: 'Trang tiếp theo',
+    searchPl: 'Tìm kiếm'
 }
 
 export const flyoutLabels = {

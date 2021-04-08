@@ -13,7 +13,10 @@ export const buttonLabels = {
     addNew: '添加新記錄',
     update: '更新',
     delete: '刪除',
-    ok: '好的'
+    ok: '好的',
+    prev: '上一頁',
+    next: '下一頁',
+    searchPl: '搜索'
 }
 
 export const flyoutLabels = {
