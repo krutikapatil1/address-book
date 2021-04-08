@@ -240,7 +240,7 @@ export default {
     },
     checkAll(event) {
       if(event.target.checked) {
-        this.selectedItems = this.items;
+        this.selectedItems = this.filteredItems;
       }
       else {
         this.selectedItems = [];
@@ -251,6 +251,7 @@ export default {
       this.selectedItems = [];
       this.resetCheckBoxes();
       this.currentPage = 1;
+      this.searchStr = '';
     },
     resetCheckBoxes() {
       const thead = document.querySelector('thead');
