@@ -39,44 +39,32 @@
             <tr>
               <th rowspan="2"><input type="checkbox" class="checkbox" @change="checkAll($event)" :disabled="items.length === 0"></th>
               <th rowspan="2" @click="sort('id')">{{localeLabels.labels.id}} 
-                <i v-if="currentSort === 'id' && currentSortDir === 'desc'" 
-              class='fas fa-sort-down' 
-              :class="{'active': currentSort === 'id'}"></i>
-              <i v-else class='fas fa-sort-up' 
-              :class="{'active': currentSort === 'id'}"></i>
+                <font-awesome-icon class="icons" v-if="currentSort === 'id' && currentSortDir === 'desc'" icon="sort-down" :class="{'active': currentSort === 'id'}"/>
+                <font-awesome-icon class="icons" v-else icon="sort-up" :class="{'active': currentSort === 'id'}"/>
               </th>
               <th rowspan="2" @click="sort('name')">* {{localeLabels.labels.name}}
-                <i v-if="currentSort === 'name' && currentSortDir === 'desc'" 
-              class='fas fa-sort-down' 
-              :class="{'active': currentSort === 'name'}"></i>
-              <i v-else class='fas fa-sort-up' :class="{'active': currentSort === 'name'}"></i>
+                <font-awesome-icon class="icons" v-if="currentSort === 'name' && currentSortDir === 'desc'" icon="sort-down" :class="{'active': currentSort === 'name'}"/>
+                <font-awesome-icon class="icons" v-else icon="sort-up" :class="{'active': currentSort === 'name'}"/>
               </th>
               <th rowspan="2" @click="sort('location')">{{localeLabels.labels.location}}
-                <i v-if="currentSort === 'location' && currentSortDir === 'desc'" 
-              class='fas fa-sort-down' 
-              :class="{'active': currentSort === 'location'}"></i>
-              <i v-else class='fas fa-sort-up' :class="{'active': currentSort === 'location'}"></i>
+                <font-awesome-icon class="icons" v-if="currentSort === 'location' && currentSortDir === 'desc'" icon="sort-down" :class="{'active': currentSort === 'location'}"/>
+                <font-awesome-icon class="icons" v-else icon="sort-up" :class="{'active': currentSort === 'location'}"/>
+              
               </th>
               <th rowspan="2" @click="sort('building')">{{localeLabels.labels.building}}
-                <i v-if="currentSort === 'building' && currentSortDir === 'desc'" 
-              class='fas fa-sort-down' 
-              :class="{'active': currentSort === 'building'}"></i>
-              <i v-else class='fas fa-sort-up' :class="{'active': currentSort === 'building'}"></i>
+                <font-awesome-icon class="icons" v-if="currentSort === 'building' && currentSortDir === 'desc'" icon="sort-down" :class="{'active': currentSort === 'building'}"/>
+                <font-awesome-icon class="icons" v-else icon="sort-up" :class="{'active': currentSort === 'building'}"/>
               </th>
               <th colspan="2">{{localeLabels.labels.phone}}</th>
             </tr>
             <tr>
               <th rowspan="1" @click="sort('office')">{{localeLabels.labels.office}}
-                <i v-if="currentSort === 'office' && currentSortDir === 'desc'" 
-              class='fas fa-sort-down' 
-              :class="{'active': currentSort === 'office'}"></i>
-              <i v-else class='fas fa-sort-up' :class="{'active': currentSort === 'office'}"></i>
+                <font-awesome-icon class="icons" v-if="currentSort === 'office' && currentSortDir === 'desc'" icon="sort-down" :class="{'active': currentSort === 'office'}"/>
+                <font-awesome-icon class="icons" v-else icon="sort-up" :class="{'active': currentSort === 'office'}"/>
               </th>
               <th rowspan="1" @click="sort('cell')">* {{localeLabels.labels.cell}}
-                <i v-if="currentSort === 'cell' && currentSortDir === 'desc'" 
-              class='fas fa-sort-down' 
-              :class="{'active': currentSort === 'cell'}"></i>
-              <i v-else class='fas fa-sort-up' :class="{'active': currentSort === 'cell'}"></i>
+                <font-awesome-icon class="icons" v-if="currentSort === 'cell' && currentSortDir === 'desc'" icon="sort-down" :class="{'active': currentSort === 'cell'}"/>
+                <font-awesome-icon class="icons" v-else icon="sort-up" :class="{'active': currentSort === 'cell'}"/>
               </th>
             </tr>
           </thead>
@@ -428,14 +416,13 @@ table {
   margin-bottom: 76px;
 }
 
-i {
-  color: #C0C0C0;
-  font-size: 10px;
+.icons.active {
+  color: #ffffff;
+  font-size: 20px;
 }
 
-i.active {
-  color: #ffffff;
-  font-size: 18px;
+.icons {
+  color: #C0C0C0
 }
 
 button:disabled {
